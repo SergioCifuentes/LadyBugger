@@ -5,8 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import ladybugger.model.Employee;
 
+
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long>{
-    Optional<Employee> findByEmail(String email);
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+	Optional<Employee> findByEmail(String email);
 	Boolean existsByEmail(String email);
 }

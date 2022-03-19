@@ -1,5 +1,4 @@
 package ladybugger.security.services;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -14,15 +13,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	private Long id;
+	
 	private String email;
+	private String name;
+	private String middleName;
+	private String lastName;
+	
 	@JsonIgnore
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
-	public UserDetailsImpl(Long id,  String email, String password,
-			Collection<? extends GrantedAuthority> authorities) {
+	public UserDetailsImpl(Long id, String email, String password, String name, String middleName, 
+		String lastName,Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
+		this.name = name;
+		this.lastName = lastName;
+		this.middleName = middleName;
 		this.authorities = authorities;
 	}
 	public static UserDetailsImpl build(Employee user) {
@@ -33,6 +40,9 @@ public class UserDetailsImpl implements UserDetails {
 				user.getId(), 
 				user.getEmail(),
 				user.getPassword(), 
+				user.getName(), 
+				user.getMiddleName(), 
+				user.getLastName(), 
 				authorities);
 	}
 	@Override
@@ -48,6 +58,16 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public String getPassword() {
 		return password;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public String getMiddleName() {
+		return middleName;
+	}
+	public String getLastName() {
+		return lastName;
 	}
 
 	@Override
@@ -75,9 +95,9 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(id, user.id);
 	}
-    @Override
-    public String getUsername() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

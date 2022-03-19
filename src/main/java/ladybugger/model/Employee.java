@@ -25,6 +25,7 @@ public class Employee {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+
 	@NotBlank
 	@Size(max = 50)
 	@Email
@@ -84,6 +85,17 @@ public class Employee {
 
 
 
+
+
+	public Employee(@NotBlank @Size(max = 50) @Email String email,
+			@NotBlank @Size(max = 120) String password) {
+		this.email = email;
+		this.password = password;
+	}
+
+
+
+
 	public Employee(@NotBlank @Size(max = 50) @Email String email, @NotBlank @Size(max = 120) String password,
 			String name, String middleName, String lastName) {
 		this.email = email;
@@ -91,12 +103,6 @@ public class Employee {
 		this.name = name;
 		this.middleName = middleName;
 		this.lastName = lastName;
-	}
-
-
-	public Employee(@NotBlank @Size(max = 50) @Email String email, @NotBlank @Size(max = 120) String password) {
-		this.email = email;
-		this.password = password;
 	}
 
 

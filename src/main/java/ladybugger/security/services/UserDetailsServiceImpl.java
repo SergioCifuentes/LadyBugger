@@ -13,13 +13,13 @@ import ladybugger.repository.EmployeeRepository;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
-	
 	EmployeeRepository userRepository;
+
 	@Override
 	@Transactional
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Employee user = userRepository.findByEmail(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Employee user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
 		return UserDetailsImpl.build(user);
 	}
 }
