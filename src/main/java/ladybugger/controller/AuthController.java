@@ -31,6 +31,7 @@ import ladybugger.security.services.UserDetailsImpl;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -42,8 +43,8 @@ public class AuthController {
 	PasswordEncoder encoder;
 	@Autowired
 	JwtUtils jwtUtils;
-	@CrossOrigin(origins = "*", maxAge = 3600)
 	@PostMapping("/sign-in")
+	
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -59,7 +60,6 @@ public class AuthController {
 												 userDetails.getEmail(), 
 												 roles));
 	}
-	@CrossOrigin(origins = "*", maxAge = 3600)
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		
