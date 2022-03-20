@@ -42,7 +42,7 @@ public class AuthController {
 	PasswordEncoder encoder;
 	@Autowired
 	JwtUtils jwtUtils;
-	@PostMapping("/signin")
+	@PostMapping("/sign-in")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -58,7 +58,7 @@ public class AuthController {
 												 userDetails.getEmail(), 
 												 roles));
 	}
-	@PostMapping("/signup")
+	@PostMapping("/sign-up")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
