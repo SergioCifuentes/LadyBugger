@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import ladybugger.security.services.UserDetailsServiceImpl;
 
@@ -46,14 +48,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	// @Bean
+	// public WebMvcConfigurer corsConfigurer(){
+	// 	return (WebMvcConfigurerAdapter) addCorsMapping(registry)->{
+	// 		registry.addMapping("/api/auth/**").allowedOrigins("https://ladybugger.herokuapp.com")
+	// 	}
+	// }
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-			.antMatchers("/api/test/**").permitAll()
-			.anyRequest().authenticated().and()
+			.authorizeRequests().antMatchers("/api/auth/**").permitAll().and()
             .cors()
             .and()
             .exceptionHandling()
@@ -64,6 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .csrf()
             .disable();
+			// .antMatchers("/api/test/**").permitAll()
+			// .anyRequest().authenticated();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 }
