@@ -29,7 +29,7 @@ import ladybugger.repository.EmployeeRepository;
 import ladybugger.security.jwt.JwtUtils;
 import ladybugger.security.services.UserDetailsImpl;
 
-@CrossOrigin(origins = "*",allowCredentials="true", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
 
