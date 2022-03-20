@@ -23,11 +23,11 @@ public class SignupRequest {
 
   @NotBlank
   @Size(max = 40)
-  private String middleName;
+  private String middle_name;
 
   @NotBlank
   @Size(max = 40)
-  private String lastName;
+  private String last_name;
 
 
 
@@ -66,18 +66,18 @@ public class SignupRequest {
   }
 
   public String getMiddleName() {
-    return middleName;
+    return middle_name;
   }
 
   public void setMiddleName(String middleName) {
-    this.middleName = middleName;
+    this.middle_name = middle_name;
   }
 
   public String getLastName() {
-    return lastName;
+    return last_name;
   }
 
   public void setLastName(String lastName) {
-    this.lastName = lastName;
+    this.last_name = last_name;
   }
 }

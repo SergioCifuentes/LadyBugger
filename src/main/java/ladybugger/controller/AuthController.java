@@ -42,6 +42,7 @@ public class AuthController {
 	PasswordEncoder encoder;
 	@Autowired
 	JwtUtils jwtUtils;
+	@CrossOrigin(origins = "*", maxAge = 3600)
 	@PostMapping("/sign-in")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
@@ -58,6 +59,7 @@ public class AuthController {
 												 userDetails.getEmail(), 
 												 roles));
 	}
+	@CrossOrigin(origins = "*", maxAge = 3600)
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		
