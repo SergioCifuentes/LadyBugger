@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +30,7 @@ import ladybugger.repository.EmployeeRepository;
 import ladybugger.security.jwt.JwtUtils;
 import ladybugger.security.services.UserDetailsImpl;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 
@@ -61,7 +62,8 @@ public class AuthController {
 												 userDetails.getEmail(), 
 												 roles));
 	}
-	@PostMapping("/sign-up")
+	@PostMapping("/create-user")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -70,6 +72,8 @@ public class AuthController {
 					.body(new MessageResponse("Error: Email is already in use!"));
 		}
 		// Create new user's account
+		System.out.println(signUpRequest.getMiddleName());
+		System.out.println("MIDDLE");
 		Employee user = new Employee(signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()),
 							 signUpRequest.getName(),
@@ -91,11 +95,7 @@ public class AuthController {
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(adminRole);
 					break;
-				case "mod":
-					Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(modRole);
-					break;
+				
 				default:
 					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));

@@ -19,13 +19,16 @@ public class JwtUtils {
 	public String generateJwtToken(Authentication authentication) {
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 		return Jwts.builder()
-				.setSubject((userPrincipal.getUsername()))
+				.setSubject((userPrincipal.getEmail()))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
 				.compact();
 	}
 	public String getUserNameFromJwtToken(String token) {
+		System.out.println(token);
+		System.out.println("TOKEN");
+		System.out.println(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token));
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
 	}
 	public boolean validateJwtToken(String authToken) {

@@ -19,15 +19,17 @@ public class SignupRequest {
 
   @NotBlank
   @Size(max = 40)
+  private String middleName;
+
+  @NotBlank
+  @Size(max = 40)
+  private String lastName;
+
+  @NotBlank
+  @Size(max = 40)
   private String name;
 
-  @NotBlank
-  @Size(max = 40)
-  private String middle_name;
 
-  @NotBlank
-  @Size(max = 40)
-  private String last_name;
 
 
 
@@ -66,18 +68,18 @@ public class SignupRequest {
   }
 
   public String getMiddleName() {
-    return middle_name;
+    return middleName;
   }
 
   public void setMiddleName(String middleName) {
-    this.middle_name = middle_name;
+    this.middleName = middleName;
   }
 
   public String getLastName() {
-    return last_name;
+    return lastName;
   }
 
   public void setLastName(String lastName) {
-    this.last_name = last_name;
+    this.lastName = lastName;
   }
 }
