@@ -44,6 +44,10 @@ public class Employee {
 				joinColumns = @JoinColumn(name = "user_id"), 
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
+
+	@OneToMany(mappedBy="project")
+    private Set<Project> projects;
+
 	
 	
 
