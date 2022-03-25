@@ -1,7 +1,5 @@
 package ladybugger.controller;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,12 +21,10 @@ import ladybugger.model.Employee;
 import ladybugger.model.PMAssignment;
 import ladybugger.model.Project;
 import ladybugger.payload.request.ProjectCreationRequest;
-import ladybugger.payload.request.SignupRequest;
-import ladybugger.payload.response.MessageResponse;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PMAssignmentRepository;
 import ladybugger.repository.ProjectRepository;
-import ladybugger.security.services.UserDetailsImpl;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 
@@ -42,7 +38,7 @@ public class AdminController {
     @Autowired
     PMAssignmentRepository pmAssignmentRepository;
     @PostMapping("/create-project")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerProject(@Valid @RequestBody ProjectCreationRequest projectCreationRequest) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                         .getPrincipal();
