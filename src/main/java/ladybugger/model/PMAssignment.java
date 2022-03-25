@@ -3,31 +3,24 @@ package ladybugger.model;
 
 import javax.persistence.*;
 
-
+@Entity
 public class PMAssignment {
     
     @EmbeddedId
-    private PMAssignment id;
+    PMAssignmentKey id;
 
     @ManyToOne
     @MapsId("employeeId")
     @JoinColumn(name = "employee_id")
-    private Employee employee;
+    Employee employee;
 
     @ManyToOne
     @MapsId("projectId")
     @JoinColumn(name = "project_id")
-    private Project project;
+    Project project;
 
-    private java.sql.Timestamp date;
+    //private java.sql.Timestamp date;
 
-    public PMAssignment getId() {
-        return id;
-    }
-
-    public void setId(PMAssignment id) {
-        this.id = id;
-    }
 
     public Employee getEmployee() {
         return employee;
@@ -45,13 +38,13 @@ public class PMAssignment {
         this.project = project;
     }
 
-    public java.sql.Timestamp getDate() {
-        return date;
-    }
+    // public java.sql.Timestamp getDate() {
+    //     return date;
+    // }
 
-    public void setDate(java.sql.Timestamp date) {
-        this.date = date;
-    }
+    // public void setDate(java.sql.Timestamp date) {
+    //     this.date = date;
+    // }
 
 
     

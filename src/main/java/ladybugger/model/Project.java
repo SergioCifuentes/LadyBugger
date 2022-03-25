@@ -49,8 +49,8 @@ public class Project {
 	
 
 
-    @OneToMany(mappedBy = "employee")
-    Set<Employee> pms;
+    @OneToMany(mappedBy = "project")
+    Set<PMAssignment> pms;
 
 
 
@@ -91,12 +91,15 @@ public class Project {
     }
 
 
-    public Set<Employee> getPms() {
+
+
+
+    public Set<PMAssignment> getPms() {
         return pms;
     }
 
 
-    public void setPms(Set<Employee> pms) {
+    public void setPms(Set<PMAssignment> pms) {
         this.pms = pms;
     }
 
