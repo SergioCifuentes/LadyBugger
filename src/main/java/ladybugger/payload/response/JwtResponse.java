@@ -15,6 +15,9 @@ public class JwtResponse {
     this.email = email;
     this.roles = roles;
   }
+  public JwtResponse(Long id) {
+    this.id = id;
+  }
 
   public String getAccessToken() {
     return token;
