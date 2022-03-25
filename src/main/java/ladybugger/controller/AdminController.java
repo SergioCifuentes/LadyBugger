@@ -3,6 +3,7 @@ package ladybugger.controller;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +31,6 @@ import ladybugger.payload.response.MessageResponse;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PMAssignmentRepository;
 import ladybugger.repository.ProjectRepository;
-import ladybugger.security.services.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 
@@ -42,11 +44,10 @@ public class AdminController {
     @Autowired
     PMAssignmentRepository pmAssignmentRepository;
     @PostMapping("/create-project")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerProject(@Valid @RequestBody ProjectCreationRequest projectCreationRequest) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                         .getPrincipal();
-
                         
 		// Create new project
         Employee em =userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Error: Employee not found"));
@@ -58,19 +59,11 @@ public class AdminController {
 							 projectCreationRequest.getDueDate(),
                              em
                              );
-		
-			
-			;
-		
-		
-		
         Employee pm =userRepository.findById((long)projectCreationRequest.getPmId()).orElseThrow(() -> new RuntimeException("Error: Employee not found"));
         java.sql.Timestamp timestamp1 = new java.sql.Timestamp(System.currentTimeMillis());
         Set<PMAssignment> pmas = new HashSet<>();
         PMAssignment apm = new PMAssignment(pm,project,timestamp1);
         pmas.add(apm);
-        System.out.println(apm);
-        System.out.println(project);
         
         pm.setProjects(pmas);
         project.setPms(pmas);
@@ -78,5 +71,13 @@ public class AdminController {
         projectRepository.save(project);
         pmAssignmentRepository.save(apm);
 		return new ResponseEntity<String>("{\"id\": \""+project.getId()+"\"}", HttpStatus.OK);
+	}
+
+    @GetMapping("/devs-list")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Object[]> getDevs() {
+        System.out.println("Hola");
+
+		return userRepository.findByDevRole();
 	}
 }
