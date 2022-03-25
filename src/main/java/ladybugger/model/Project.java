@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import javax.persistence.*;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,9 +40,9 @@ public class Project {
    
 	private int status;
 	
-    private java.sql.Timestamp startDate;
+    private Date startDate;
 
-    private java.sql.Timestamp dueDate;
+    private Date dueDate;
 
     @ManyToOne
     @JoinColumn(name="admin", nullable=false)
@@ -61,7 +62,7 @@ public class Project {
 
 
 	public Project(@NotBlank @Size(max = 50) String name, @NotBlank @Size(max = 500) String description, int status,
-            Timestamp startDate, Timestamp dueDate, Employee admin) {
+    Date startDate, Date dueDate, Employee admin) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -71,22 +72,26 @@ public class Project {
     }
 
 
-    public java.sql.Timestamp getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
+    public void addPm(PMAssignment pm){
+        
+        pms.add(pm);
+    }
 
-    public void setStartDate(java.sql.Timestamp startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
 
-    public java.sql.Timestamp getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
 
-    public void setDueDate(java.sql.Timestamp dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 

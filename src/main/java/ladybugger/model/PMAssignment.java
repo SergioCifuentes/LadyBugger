@@ -1,26 +1,44 @@
 package ladybugger.model;
 
 
+import java.sql.Timestamp;
+
 import javax.persistence.*;
 
 @Entity
+@Table(name = "pmassignment")
 public class PMAssignment {
     
-    @EmbeddedId
-    PMAssignmentKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
     @ManyToOne
-    @MapsId("employeeId")
     @JoinColumn(name = "employee_id")
     Employee employee;
 
     @ManyToOne
-    @MapsId("projectId")
     @JoinColumn(name = "project_id")
     Project project;
 
-    //private java.sql.Timestamp date;
+    private java.sql.Timestamp date;
 
+
+    
+
+    public PMAssignment(Employee employee, Project project, Timestamp date) {
+        this.employee = employee;
+        this.project = project;
+        this.date = date;
+    }
+
+    public java.sql.Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(java.sql.Timestamp date) {
+        this.date = date;
+    }
 
     public Employee getEmployee() {
         return employee;

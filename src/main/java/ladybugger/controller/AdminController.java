@@ -1,7 +1,14 @@
 package ladybugger.controller;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ladybugger.model.Employee;
+import ladybugger.model.PMAssignment;
 import ladybugger.model.Project;
 import ladybugger.payload.request.ProjectCreationRequest;
 import ladybugger.payload.request.SignupRequest;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.repository.EmployeeRepository;
+import ladybugger.repository.PMAssignmentRepository;
 import ladybugger.repository.ProjectRepository;
 import ladybugger.security.services.UserDetailsImpl;
 
@@ -26,31 +35,48 @@ import ladybugger.security.services.UserDetailsImpl;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    @Autowired
     EmployeeRepository userRepository;
+    @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    PMAssignmentRepository pmAssignmentRepository;
     @PostMapping("/create-project")
-	@PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerProject(@Valid @RequestBody ProjectCreationRequest projectCreationRequest) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                         .getPrincipal();
 
                         
 		// Create new project
-        System.out.println(userDetails.getUsername());
+        Employee em =userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Error: Employee not found"));
 		Project project = new Project(projectCreationRequest.getName(),
 							 
                             projectCreationRequest.getDescription(),
 							 1,
                              projectCreationRequest.getStartDate(),
 							 projectCreationRequest.getDueDate(),
-                             userRepository.findByEmail(userDetails.getUsername()).get() 
+                             em
                              );
 		
 			
 			;
 		
 		
-		projectRepository.save(project);
-		return ResponseEntity.ok(new MessageResponse("Project registered successfully!"));
+		
+        Employee pm =userRepository.findById((long)projectCreationRequest.getPmId()).orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+        java.sql.Timestamp timestamp1 = new java.sql.Timestamp(System.currentTimeMillis());
+        Set<PMAssignment> pmas = new HashSet<>();
+        PMAssignment apm = new PMAssignment(pm,project,timestamp1);
+        pmas.add(apm);
+        System.out.println(apm);
+        System.out.println(project);
+        
+        pm.setProjects(pmas);
+        project.setPms(pmas);
+        
+        projectRepository.save(project);
+        pmAssignmentRepository.save(apm);
+		return new ResponseEntity<String>("{\"id\": \""+project.getId()+"\"}", HttpStatus.OK);
 	}
 }

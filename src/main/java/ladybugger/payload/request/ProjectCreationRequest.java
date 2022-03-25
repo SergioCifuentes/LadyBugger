@@ -22,25 +22,25 @@ public class ProjectCreationRequest {
   private int pmId;
 
   @NotBlank
-  private Timestamp startDate;
+  private Date startDate;
 
   @NotBlank
-  private Timestamp dueDate;
+  private Date dueDate;
 
   
-public Timestamp getStartDate() {
+public Date getStartDate() {
     return startDate;
 }
 
-public void setStartDate(Timestamp startDate) {
+public void setStartDate(Date startDate) {
     this.startDate = startDate;
 }
 
-public Timestamp getDueDate() {
+public Date getDueDate() {
     return dueDate;
 }
 
-public void setDueDate(Timestamp dueDate) {
+public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
 }
 
