@@ -29,7 +29,6 @@ import ladybugger.repository.PMAssignmentRepository;
 import ladybugger.repository.ProjectRepository;
 
 @CrossOrigin(origins = "*")
-
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -70,7 +69,7 @@ public class AdminController {
 	}
 
     @GetMapping("/devs-list")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Object[]> getDevs() {
         System.out.println("Hola");
 
