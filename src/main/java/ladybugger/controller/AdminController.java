@@ -28,7 +28,7 @@ import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PMAssignmentRepository;
 import ladybugger.repository.ProjectRepository;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*")
 
 @RestController
 @RequestMapping("/admin")
