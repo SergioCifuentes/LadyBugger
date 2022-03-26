@@ -70,7 +70,7 @@ public class AdminController {
 	}
 
     @GetMapping("/devs-list")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public List<Object[]> getDevs() {
         System.out.println("Hola");
 

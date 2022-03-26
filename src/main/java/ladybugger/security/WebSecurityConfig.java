@@ -51,6 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable().authorizeRequests()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers("/api/test/**").permitAll()
+			.antMatchers("/admin/**").permitAll()
             .anyRequest().authenticated()
             .and()
             // this disables session creation on Spring Security
