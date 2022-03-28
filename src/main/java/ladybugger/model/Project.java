@@ -37,15 +37,14 @@ public class Project {
     @ManyToOne
     @JoinColumn(name="admin", nullable=false)
     private Employee admin;
+
+    @OneToMany(mappedBy = "project")
+	Set<Case> cases;
 	
 
 
     @OneToMany(mappedBy = "project")
     Set<PMAssignment> pms;
-
-
-
-	
 
 
 
@@ -59,6 +58,10 @@ public class Project {
         this.startDate = startDate;
         this.dueDate = dueDate;
         this.admin = admin;
+    }
+
+
+    public Project() {
     }
 
 

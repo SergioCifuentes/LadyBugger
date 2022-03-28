@@ -22,12 +22,15 @@ public class CaseType {
 	private String name;
 
     @NotBlank
-	@Size(max = 50)
+	@Size(max = 500)
 	private String description;
     
     private int status;
 
     
+    public CaseType() {
+    }
+
     public CaseType(@NotBlank @Size(max = 50) String name, @NotBlank @Size(max = 50) String description, int status) {
         this.name = name;
         this.description = description;
