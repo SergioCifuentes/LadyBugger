@@ -38,6 +38,11 @@ public class Submission {
     @NotBlank
     private Date date;
 
+
+    
+    public Submission() {
+    }
+
     public Submission(PhaseAssignment phaseAssignment, @NotBlank @Size(max = 500) String comment, @NotBlank int hours,
             @NotBlank Float cost, @NotBlank Date date) {
         this.phaseAssignment = phaseAssignment;

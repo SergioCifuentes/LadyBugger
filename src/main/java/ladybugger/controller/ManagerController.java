@@ -16,9 +16,12 @@ import ladybugger.model.PMAssignment;
 import ladybugger.model.Phase;
 import ladybugger.model.PhaseAssignment;
 import ladybugger.model.Project;
+import ladybugger.model.Revision;
+import ladybugger.model.Submission;
 import ladybugger.model.Case;
 import ladybugger.payload.request.CaseCreationRequest;
 import ladybugger.payload.request.PhaseAssignmentRequest;
+import ladybugger.payload.request.RevisionCreationRequest;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.repository.CaseRepository;
 import ladybugger.repository.CaseTypeRepository;
@@ -27,6 +30,8 @@ import ladybugger.repository.PMAssignmentRepository;
 import ladybugger.repository.PhaseAssignmentRepository;
 import ladybugger.repository.PhaseRepository;
 import ladybugger.repository.ProjectRepository;
+import ladybugger.repository.RevisionRepository;
+import ladybugger.repository.SubmissionRepository;
 
 
 
@@ -48,8 +53,11 @@ public class ManagerController {
     @Autowired
     PhaseRepository phaseRepository;   
     @Autowired
-    PhaseAssignmentRepository phaseAssignmentRepository;   
-
+    PhaseAssignmentRepository phaseAssignmentRepository; 
+    @Autowired
+    SubmissionRepository submissionRepository;   
+    @Autowired
+    RevisionRepository revisionRepository;
 
     @PostMapping("/create-case")
     @PreAuthorize("hasRole('USER')")
@@ -116,6 +124,32 @@ public class ManagerController {
 
         phaseAssignmentRepository.save(phaseAssignment);
 		return new ResponseEntity<String>("{\"id\": \""+phaseAssignment.getId()+"\"}", HttpStatus.OK);
+    }
+
+    @PostMapping("/revision")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> revision(@Valid @RequestBody RevisionCreationRequest revisionCreationRequest) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Employee em = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+
+        Submission submission = submissionRepository.findById((long)revisionCreationRequest.getSubmissionId())
+                .orElseThrow(() -> new RuntimeException("Error: Submission not found"));
+        PMAssignment pma = pmaRepository.findLastManager(submission.getPhaseAssignment().getCaseM().getProject().getId());
+        if(!pma.getEmployee().getId().equals(em.getId())){
+            return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: You are not the Project Manager of this phase"));
+        }
+                 
+        Revision revision = new Revision(     revisionCreationRequest.isAccepted(),
+                                                submission,
+                                                revisionCreationRequest.getDate(),
+                                                revisionCreationRequest.getRejectReason());
+
+        revisionRepository.save(revision);
+		return new ResponseEntity<String>("{\"id\": \""+revision.getId()+"\"}", HttpStatus.OK);
     }
     
 }
