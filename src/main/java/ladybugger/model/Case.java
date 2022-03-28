@@ -44,6 +44,9 @@ public class Case {
 
 
     
+    public Case() {
+    }
+
     public Case(@NotBlank @Size(max = 50) String title, @NotBlank @Size(max = 500) String description,
             CaseType casetype, int status, Project project, @NotBlank Date startDate, Date dueDate) {
         this.title = title;

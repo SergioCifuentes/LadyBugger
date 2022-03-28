@@ -30,10 +30,14 @@ public class Phase {
     private CaseType casetype;
 
     
+    
     public Phase(@NotBlank @Size(max = 50) String name, int number, CaseType casetype) {
         this.name = name;
         this.number = number;
         this.casetype = casetype;
+    }
+
+    public Phase() {
     }
 
     public Long getId() {

@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import ladybugger.model.CaseType;
 import ladybugger.model.Employee;
 import ladybugger.model.PMAssignment;
+import ladybugger.model.Phase;
+import ladybugger.model.PhaseAssignment;
 import ladybugger.model.Project;
 import ladybugger.model.Case;
 import ladybugger.payload.request.CaseCreationRequest;
+import ladybugger.payload.request.PhaseAssignmentRequest;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.repository.CaseRepository;
 import ladybugger.repository.CaseTypeRepository;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PMAssignmentRepository;
+import ladybugger.repository.PhaseAssignmentRepository;
+import ladybugger.repository.PhaseRepository;
 import ladybugger.repository.ProjectRepository;
 
 
@@ -40,6 +45,10 @@ public class ManagerController {
     EmployeeRepository userRepository;  
     @Autowired
     PMAssignmentRepository pmaRepository;    
+    @Autowired
+    PhaseRepository phaseRepository;   
+    @Autowired
+    PhaseAssignmentRepository phaseAssignmentRepository;   
 
 
     @PostMapping("/create-case")
@@ -72,6 +81,40 @@ public class ManagerController {
 
         caseRepository.save(newCase);
 		return new ResponseEntity<String>("{\"id\": \""+newCase.getId()+"\"}", HttpStatus.OK);
+    }
+
+    @PostMapping("/assign-phase")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> assignPhase(@Valid @RequestBody PhaseAssignmentRequest assignmentRequest) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Employee em = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+
+        Phase phase = phaseRepository.findById((long)assignmentRequest.getPhaseId())
+                .orElseThrow(() -> new RuntimeException("Error: Phase not found"));
+
+        Case caseM = caseRepository.findById((long)assignmentRequest.getCaseId())
+                .orElseThrow(() -> new RuntimeException("Error: Case not found"));        
+        // System.out.println(pmaRepository.findLastManager(pr.getId()));  
+        PMAssignment pma = pmaRepository.findLastManager(caseM.getProject().getId());
+        if(!pma.getEmployee().getId().equals(em.getId())){
+            return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: You are not the project manager"));
+        }
+        Employee dev = userRepository.findById((long)assignmentRequest.getDevId())
+                .orElseThrow(() -> new RuntimeException("Error: Dev not found"));
+        PhaseAssignment phaseAssignment= new PhaseAssignment(dev, 
+                                            phase, 
+                                            caseM,
+                                            1, 
+                                            assignmentRequest.getStartDate(), 
+                                            assignmentRequest.getDueDate());
+       
+
+        phaseAssignmentRepository.save(phaseAssignment);
+		return new ResponseEntity<String>("{\"id\": \""+phaseAssignment.getId()+"\"}", HttpStatus.OK);
     }
     
 }
