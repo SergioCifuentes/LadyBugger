@@ -6,9 +6,6 @@ import javax.validation.constraints.*;
 public class ProjectCreationRequest {
     
 
-
-
-
   @NotBlank
   @Size(max = 40)
   private String name;
