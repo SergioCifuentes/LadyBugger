@@ -15,6 +15,9 @@ public class PhaseAssignmentRequest {
     private int caseId;
 
     @NotBlank
+    private String description;
+
+    @NotBlank
     private Date startDate;
   
     @NotBlank
@@ -30,6 +33,15 @@ public class PhaseAssignmentRequest {
 
     public void setCaseId(int caseId) {
         this.caseId = caseId;
+    }
+
+    
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setDevId(int devId) {

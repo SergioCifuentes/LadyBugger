@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.sql.Date;
@@ -31,6 +32,10 @@ public class PhaseAssignment {
     @JoinColumn(name="caseM", nullable=false)
     private Case caseM;
 
+    @NotBlank
+	@Size(max = 500)
+	private String description;
+
     private int status;
 
     @NotBlank
@@ -45,15 +50,47 @@ public class PhaseAssignment {
 
 
 
-    
-    public PhaseAssignment(Employee dev, Phase phase, Case caseM, int status, @NotBlank Date startDate, Date dueDate) {
+
+
+
+
+
+    public PhaseAssignment(Employee dev, Phase phase, Case caseM, @NotBlank @Size(max = 500) String description,
+            int status, @NotBlank Date startDate, Date dueDate) {
         this.dev = dev;
         this.phase = phase;
         this.caseM = caseM;
+        this.description = description;
         this.status = status;
         this.startDate = startDate;
         this.dueDate = dueDate;
     }
+
+
+
+
+
+
+
+
+    public String getDescription() {
+        return description;
+    }
+
+
+
+
+
+
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+
+
 
 
 

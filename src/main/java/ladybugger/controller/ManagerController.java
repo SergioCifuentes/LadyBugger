@@ -108,6 +108,7 @@ public class ManagerController {
         PhaseAssignment phaseAssignment= new PhaseAssignment(dev, 
                                             phase, 
                                             caseM,
+                                            assignmentRequest.getDescription(),
                                             1, 
                                             assignmentRequest.getStartDate(), 
                                             assignmentRequest.getDueDate());
