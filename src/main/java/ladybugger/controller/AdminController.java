@@ -1,5 +1,6 @@
 package ladybugger.controller;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import ladybugger.model.PMAssignment;
 import ladybugger.model.Phase;
 import ladybugger.model.Project;
 import ladybugger.payload.request.CaseTypeCreationRequest;
+import ladybugger.payload.request.PMAssignmentRequest;
 import ladybugger.payload.request.ProjectCreationRequest;
 import ladybugger.repository.CaseTypeRepository;
 import ladybugger.repository.EmployeeRepository;
@@ -110,4 +112,21 @@ public class AdminController {
         phaseRepository.saveAll(phases);
 		return new ResponseEntity<String>("{\"id\": \""+caseType.getId()+"\"}", HttpStatus.OK);
     }
+
+
+    @PostMapping("/assign-project")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> assignProject(@Valid @RequestBody PMAssignmentRequest pmAssignmentRequest) {
+        Project pr = projectRepository.findById((long)pmAssignmentRequest.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Error: Project not found")); 
+
+        Employee dev = userRepository.findById((long)pmAssignmentRequest.getEmployeeId())
+        .orElseThrow(() -> new RuntimeException("Error: Dev not found"));  
+        java.sql.Timestamp timestamp1 = new java.sql.Timestamp(System.currentTimeMillis());      
+        PMAssignment pma = new PMAssignment(dev,
+                                            pr,
+                                            timestamp1);
+        pmAssignmentRepository.save(pma);
+		return new ResponseEntity<String>("Project Manager Asignado", HttpStatus.OK);
+    }    
 }
