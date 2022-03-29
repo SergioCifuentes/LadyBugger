@@ -180,7 +180,27 @@ public class ManagerController {
                         Set<Phase> pr_phase=ca.getCasetype().getPhases();
                         for (int j = 0; j < pr_phase.size(); j++) {
                                 Phase ph =pr_phase.iterator().next();
+                                
                                 PhaseAssignment pa = phaseAssignmentRepository.findDev(ca.getId(), ph.getId());
+                                if (pa!=null){
+                                        phases.add(new PhaseView(ph.getId(), 
+                                                pa.getDev().getName(), 
+                                                pa.getDev().getId(), 
+                                                ph.getNumber(), 
+                                                pa.getStatus(), 
+                                                pa.getStartDate().toString(), 
+                                                pa.getDueDate().toString()));
+                        
+                                }else{
+                                        phases.add(new PhaseView(ph.getId(), 
+                                                "", 
+                                                (long)-1, 
+                                                ph.getNumber(), 
+                                                0, 
+                                                "", 
+                                                ""));
+                        
+                                }
                                 System.out.println(pa);
                                 phases.add(new PhaseView(ph.getId(), 
                                                 pa.getDev().getName(), 

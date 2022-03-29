@@ -15,6 +15,7 @@ import ladybugger.model.PhaseAssignment;
 import ladybugger.model.Submission;
 import ladybugger.payload.request.SubmissionRequest;
 import ladybugger.payload.response.MessageResponse;
+import ladybugger.payload.response.ProfileResponse;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PhaseAssignmentRepository;
 
@@ -37,13 +38,12 @@ public class DefaultController {
     //                                 .badRequest()
     //                                 .body(new MessageResponse("Wrong id"));
     //         }
-    //         Employee pr = userRepository.findById(id_long)
+    //         Employee em = userRepository.findById(id_long)
     //                         .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
 
-    //                 cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(), 
-    //                 ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(),phases,ca.getCurrent()));
-    //         }
-    //         return ResponseEntity.ok();
+            
+    //         return ResponseEntity.ok(new ProfileResponse(em.getId(), 
+    //         name, last_name, middle_name, email, status, projects_work_on);
     // }
     
 }
