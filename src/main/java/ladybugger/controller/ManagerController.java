@@ -157,7 +157,7 @@ public class ManagerController {
                 return new ResponseEntity<String>("{\"id\": \"" + revision.getId() + "\"}", HttpStatus.OK);
         }
 
-        @GetMapping("/getproject/{id}")
+        @GetMapping("/get-project/{id}")
         public ResponseEntity<?> revision(@PathVariable String id) {
                 long id_long;
                 try {

@@ -1,5 +1,6 @@
 package ladybugger.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ladybugger.model.Case;
 import ladybugger.model.CaseType;
 import ladybugger.model.Employee;
 import ladybugger.model.PMAssignment;
@@ -27,6 +29,8 @@ import ladybugger.model.Project;
 import ladybugger.payload.request.CaseTypeCreationRequest;
 import ladybugger.payload.request.PMAssignmentRequest;
 import ladybugger.payload.request.ProjectCreationRequest;
+import ladybugger.payload.response.ProjectCases;
+import ladybugger.payload.response.SimpleCase;
 import ladybugger.repository.CaseTypeRepository;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PMAssignmentRepository;
@@ -47,6 +51,8 @@ public class AdminController {
     CaseTypeRepository caseTypeRepository;
     @Autowired
     PhaseRepository phaseRepository;
+    @Autowired
+    PMAssignmentRepository pmaRepository;
 
     @PostMapping("/create-project")
     @PreAuthorize("hasRole('ADMIN')")
@@ -127,5 +133,32 @@ public class AdminController {
                                             timestamp1);
         pmAssignmentRepository.save(pma);
 		return new ResponseEntity<String>("Project Manager Asignado", HttpStatus.OK);
-    }    
+    }  
+    @GetMapping("/get-projects")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> revision() {
+            
+            List<Project> pr = projectRepository.findAll();
+                            
+            List<ProjectCases> projectsResponse=new ArrayList<ProjectCases>();
+            for (Project project : pr) {
+                List<SimpleCase> casesResponse=new ArrayList<SimpleCase>();
+                for (Case cases : project.getCases()) {
+                    casesResponse.add(new SimpleCase(cases.getId(), 
+                                                    cases.getTitle(), 
+                                                    cases.getDescription()));
+                }
+                PMAssignment pma = pmaRepository
+                                .findLastManager(project.getId());
+                projectsResponse.add(new ProjectCases(project.getId(), 
+                                            project.getName(),
+                                            pma.getEmployee().getName()+" "+pma.getEmployee().getLastName(),
+                                            project.getStatus(), 
+                                            project.getStartDate().toString(), 
+                                            project.getDueDate().toString(), 
+                                            casesResponse));
+            }
+           
+            return ResponseEntity.ok(projectsResponse);
+    }      
 }
