@@ -136,7 +136,7 @@ public class AdminController {
     }  
     @GetMapping("/get-projects")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> revision() {
+    public ResponseEntity<?> getProjects() {
             
             List<Project> pr = projectRepository.findAll();
                             

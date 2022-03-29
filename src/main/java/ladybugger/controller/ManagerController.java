@@ -30,6 +30,7 @@ import ladybugger.payload.response.CaseView;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.payload.response.PhaseView;
 import ladybugger.payload.response.ProjectView;
+import ladybugger.payload.response.SimpleProject;
 import ladybugger.repository.CaseRepository;
 import ladybugger.repository.CaseTypeRepository;
 import ladybugger.repository.EmployeeRepository;
@@ -157,8 +158,34 @@ public class ManagerController {
                 return new ResponseEntity<String>("{\"id\": \"" + revision.getId() + "\"}", HttpStatus.OK);
         }
 
+        @GetMapping("/get-assigned-projects")
+        public ResponseEntity<?> getAssignedProject() {
+                UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                                .getPrincipal();
+                Employee em = userRepository.findByEmail(userDetails.getUsername())
+                                .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+
+                
+                List<Long> projectIds = pmaRepository.findProjects(em.getId());
+                List<SimpleProject> projects=new ArrayList<SimpleProject>();
+                for (Long id : projectIds) {
+                        Project pr = projectRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Error: Project not found"));
+        
+                        projects.add(new SimpleProject((long)id,
+                                                        em.getName()+" "+em.getLastName(),
+                                                        pr.getName(),
+                                                        pr.getDueDate().toString(),
+                                                        pr.getStatus()));
+                }
+                
+                return ResponseEntity.ok(projects);
+        }
+
+
+
         @GetMapping("/get-project/{id}")
-        public ResponseEntity<?> revision(@PathVariable String id) {
+        public ResponseEntity<?> getProject(@PathVariable String id) {
                 long id_long;
                 try {
                         id_long = Long.parseLong(id);
@@ -199,10 +226,8 @@ public class ManagerController {
                                                 0, 
                                                 "", 
                                                 ""));
-                        
                                 }
                                 System.out.println(pa);
-
                         }
                         cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(), 
                         ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(),phases,ca.getCurrent()));
