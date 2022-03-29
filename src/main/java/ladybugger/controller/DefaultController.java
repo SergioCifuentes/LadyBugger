@@ -28,22 +28,27 @@ public class DefaultController {
     @Autowired
     EmployeeRepository userRepository;
 
-    // @GetMapping("/profile/{id}")
-    // public ResponseEntity<?> profile(@PathVariable String id) {
-    //         long id_long;
-    //         try {
-    //                 id_long = Long.parseLong(id);
-    //         } catch (Exception e) {
-    //                 return ResponseEntity
-    //                                 .badRequest()
-    //                                 .body(new MessageResponse("Wrong id"));
-    //         }
-    //         Employee em = userRepository.findById(id_long)
-    //                         .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<?> profile(@PathVariable String id) {
+            long id_long;
+            try {
+                    id_long = Long.parseLong(id);
+            } catch (Exception e) {
+                    return ResponseEntity
+                                    .badRequest()
+                                    .body(new MessageResponse("Wrong id"));
+            }
+            Employee em = userRepository.findById(id_long)
+                            .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
 
             
-    //         return ResponseEntity.ok(new ProfileResponse(em.getId(), 
-    //         name, last_name, middle_name, email, status, projects_work_on);
-    // }
+            return ResponseEntity.ok(new ProfileResponse(em.getId(), 
+                                                        em.getName(), 
+                                                        em.getLastName(), 
+                                                        em.getMiddleName(), 
+                                                        em.getEmail(), 
+                                                        1, 
+                                                        em.getPhases().size()));
+    }
     
 }

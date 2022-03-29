@@ -43,6 +43,19 @@ public class Employee {
 	@OneToMany(mappedBy = "employee")
 	Set<PMAssignment> projects;
 
+	@OneToMany(mappedBy = "dev")
+	Set<PhaseAssignment> phases;
+
+
+	
+	public Set<PhaseAssignment> getPhases() {
+		return phases;
+	}
+
+	public void setPhases(Set<PhaseAssignment> phases) {
+		this.phases = phases;
+	}
+
 	public Set<Role> getRoles() {
 		return roles;
 	}
