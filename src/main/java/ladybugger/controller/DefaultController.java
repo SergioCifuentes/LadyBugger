@@ -47,7 +47,8 @@ public class DefaultController {
                                                         em.getLastName(), 
                                                         em.getMiddleName(), 
                                                         em.getEmail(), 
-                                                        1, 
+                                                        1,
+                                                        em.getStartDate().toString(), 
                                                         em.getPhases().size()));
     }
     

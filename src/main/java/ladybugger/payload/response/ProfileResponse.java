@@ -7,19 +7,34 @@ public class ProfileResponse {
     private String middle_name;
     private String email;
     private int status;
+    private String start_date;
     private int phases_worked_on;
+
+
+    
+    public String getStart_date() {
+        return start_date;
+    }
+
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+
     public ProfileResponse(Long id, String name, String last_name, String middle_name, String email, int status,
-            int projects_worked_on) {
+            String start_date, int phases_worked_on) {
         this.id = id;
         this.name = name;
         this.last_name = last_name;
         this.middle_name = middle_name;
         this.email = email;
         this.status = status;
-        this.phases_worked_on = projects_worked_on;
+        this.start_date = start_date;
+        this.phases_worked_on = phases_worked_on;
     }
 
-    
+
     public int getPhases_worked_on() {
         return phases_worked_on;
     }

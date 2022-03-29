@@ -12,6 +12,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "employee", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "email")
@@ -36,6 +38,10 @@ public class Employee {
 	private String middleName;
 	private String lastName;
 
+	private Date startDate;
+
+	private int status;
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
@@ -48,6 +54,22 @@ public class Employee {
 
 
 	
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public Set<PhaseAssignment> getPhases() {
 		return phases;
 	}
@@ -100,13 +122,17 @@ public class Employee {
 		this.password = password;
 	}
 
+
+
 	public Employee(@NotBlank @Size(max = 50) @Email String email, @NotBlank @Size(max = 120) String password,
-			String name, String middleName, String lastName) {
+			String name, String middleName, String lastName, Date startDate, int status) {
 		this.email = email;
 		this.password = password;
 		this.name = name;
 		this.middleName = middleName;
 		this.lastName = lastName;
+		this.startDate = startDate;
+		this.status = status;
 	}
 
 	public Long getId() {
