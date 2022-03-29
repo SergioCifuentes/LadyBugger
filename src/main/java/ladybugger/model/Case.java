@@ -8,7 +8,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "caseM", uniqueConstraints = {
@@ -42,13 +45,17 @@ public class Case {
 
     private Date dueDate;
 
+    private int current;
+
+
+
 
     
     public Case() {
     }
 
     public Case(@NotBlank @Size(max = 50) String title, @NotBlank @Size(max = 500) String description,
-            CaseType casetype, int status, Project project, @NotBlank Date startDate, Date dueDate) {
+            CaseType casetype, int status, Project project, @NotBlank Date startDate, Date dueDate,int current) {
         this.title = title;
         this.description = description;
         this.casetype = casetype;
@@ -56,6 +63,17 @@ public class Case {
         this.project = project;
         this.startDate = startDate;
         this.dueDate = dueDate;
+        this.current=current;
+    }
+    
+
+
+    public int getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(int current) {
+        this.current = current;
     }
 
     public Long getId() {

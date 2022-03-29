@@ -63,6 +63,16 @@ public class Project {
 
     public Project() {
     }
+    
+
+    public Set<Case> getCases() {
+        return cases;
+    }
+
+
+    public void setCases(Set<Case> cases) {
+        this.cases = cases;
+    }
 
 
     public Date getStartDate() {

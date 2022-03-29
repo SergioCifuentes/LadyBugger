@@ -1,9 +1,12 @@
 package ladybugger.model;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -27,6 +30,9 @@ public class CaseType {
     
     private int status;
 
+    @OneToMany(mappedBy = "casetype")
+	Set<Phase> phases;
+
     
     public CaseType() {
     }
@@ -35,6 +41,15 @@ public class CaseType {
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+
+    
+    public Set<Phase> getPhases() {
+        return phases;
+    }
+
+    public void setPhases(Set<Phase> phases) {
+        this.phases = phases;
     }
 
     public Long getId() {
