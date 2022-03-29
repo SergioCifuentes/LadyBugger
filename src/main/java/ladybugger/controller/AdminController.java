@@ -8,6 +8,9 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -134,11 +137,11 @@ public class AdminController {
         pmAssignmentRepository.save(pma);
 		return new ResponseEntity<String>("Project Manager Asignado", HttpStatus.OK);
     }  
-    @GetMapping("/get-projects")
+    @GetMapping(value ="/get-projects")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getProjects() {
+    public ResponseEntity<?> getProjects(Pageable pageable) {
             
-            List<Project> pr = projectRepository.findAll();
+            Page<Project> pr = projectRepository.findAll(pageable);
                             
             List<ProjectCases> projectsResponse=new ArrayList<ProjectCases>();
             for (Project project : pr) {
