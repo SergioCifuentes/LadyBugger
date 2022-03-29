@@ -202,13 +202,7 @@ public class ManagerController {
                         
                                 }
                                 System.out.println(pa);
-                                phases.add(new PhaseView(ph.getId(), 
-                                                pa.getDev().getName(), 
-                                                pa.getDev().getId(), 
-                                                ph.getNumber(), 
-                                                pa.getStatus(), 
-                                                pa.getStartDate().toString(), 
-                                                pa.getDueDate().toString()));
+
                         }
                         cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(), 
                         ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(),phases,ca.getCurrent()));
