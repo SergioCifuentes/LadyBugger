@@ -15,9 +15,10 @@ import ladybugger.model.PhaseAssignment;
 import ladybugger.model.Submission;
 import ladybugger.payload.request.SubmissionRequest;
 import ladybugger.payload.response.MessageResponse;
+import ladybugger.payload.response.PhaseResponse;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PhaseAssignmentRepository;
-
+import ladybugger.repository.PhaseRepository;
 import ladybugger.repository.SubmissionRepository;
 
 @CrossOrigin(origins = "*")
@@ -30,6 +31,8 @@ public class DeveloperController {
     PhaseAssignmentRepository phaseAssignmentRepository; 
     @Autowired
     SubmissionRepository submissionRepository;
+    @Autowired
+    PhaseRepository phaseRepository;
 
 
     @PostMapping("/submit")
@@ -58,6 +61,33 @@ public class DeveloperController {
 
         submissionRepository.save(submission);
 		return new ResponseEntity<String>("{\"id\": \""+submission.getId()+"\"}", HttpStatus.OK);
+    }
+
+    @GetMapping("/get-phase/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getPhase(@PathVariable String id) {
+            long id_long;
+            try {
+                    id_long = Long.parseLong(id);
+            } catch (Exception e) {
+                    return ResponseEntity
+                                    .badRequest()
+                                    .body(new MessageResponse("Wrong id"));
+            }
+            PhaseAssignment phaseAssignment = phaseAssignmentRepository.findById(id_long)
+                            .orElseThrow(() -> new RuntimeException("Error: Phase not found"));
+        
+            
+            return ResponseEntity.ok(new PhaseResponse(phaseAssignment.getPhase().getName(),
+                                                        phaseAssignment.getDev().getName()+" "+phaseAssignment.getDev().getLastName(),
+                                                        phaseAssignment.getStartDate().toString(),
+                                                        phaseAssignment.getDueDate().toString(),
+                                                        phaseAssignment.getCaseM().getProject().getId(),
+                                                        phaseAssignment.getCaseM().getProject().getName(),
+                                                        phaseAssignment.getCaseM().getId(),
+                                                        phaseAssignment.getCaseM().getTitle(),
+                                                        phaseAssignment.getCaseM().getDescription()
+                                                        ));
     }
 
 }

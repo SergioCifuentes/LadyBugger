@@ -1,25 +1,14 @@
 package ladybugger.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import ladybugger.model.Employee;
-import ladybugger.model.PhaseAssignment;
-import ladybugger.model.Submission;
-import ladybugger.payload.request.SubmissionRequest;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.payload.response.ProfileResponse;
 import ladybugger.repository.EmployeeRepository;
-import ladybugger.repository.PhaseAssignmentRepository;
-
-import ladybugger.repository.SubmissionRepository;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -29,6 +18,7 @@ public class DefaultController {
     EmployeeRepository userRepository;
 
     @GetMapping("/profile/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> profile(@PathVariable String id) {
             long id_long;
             try {

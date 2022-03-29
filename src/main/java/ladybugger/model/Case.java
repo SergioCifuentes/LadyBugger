@@ -8,10 +8,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import java.sql.Date;
-import java.util.Set;
 
 @Entity
 @Table(name = "caseM", uniqueConstraints = {
