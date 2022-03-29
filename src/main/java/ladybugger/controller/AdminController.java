@@ -32,8 +32,10 @@ import ladybugger.model.Project;
 import ladybugger.payload.request.CaseTypeCreationRequest;
 import ladybugger.payload.request.PMAssignmentRequest;
 import ladybugger.payload.request.ProjectCreationRequest;
+import ladybugger.payload.response.CaseResponse;
 import ladybugger.payload.response.ProjectCases;
 import ladybugger.payload.response.SimpleCase;
+import ladybugger.repository.CaseRepository;
 import ladybugger.repository.CaseTypeRepository;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PMAssignmentRepository;
@@ -56,6 +58,8 @@ public class AdminController {
     PhaseRepository phaseRepository;
     @Autowired
     PMAssignmentRepository pmaRepository;
+    @Autowired
+    CaseRepository caseRepository;
 
     @PostMapping("/create-project")
     @PreAuthorize("hasRole('ADMIN')")
@@ -163,5 +167,27 @@ public class AdminController {
             }
            
             return ResponseEntity.ok(projectsResponse);
+    }  
+
+    
+    @GetMapping(value ="/get-cases")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getCases(Pageable pageable) {
+            
+            Page<Case> pr = caseRepository.findAll(pageable);
+                            
+            List<CaseResponse> casesResponse=new ArrayList<CaseResponse>();
+            for (Case caseM : pr) {
+                casesResponse.add(new CaseResponse(caseM.getId(), 
+                                                caseM.getDescription(), 
+                                                caseM.getCasetype().getName(), 
+                                                caseM.getStatus(), 
+                                                caseM.getProject().getName(), 
+                                                caseM.getProject().getId(), 
+                                                caseM.getStartDate().toString(), 
+                                                caseM.getDueDate().toString()));           
+            }
+           
+            return ResponseEntity.ok(casesResponse);
     }      
 }
