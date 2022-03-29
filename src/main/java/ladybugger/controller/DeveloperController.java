@@ -66,6 +66,11 @@ public class DeveloperController {
     @GetMapping("/get-phase/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getPhase(@PathVariable String id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        Employee em = userRepository.findByEmail(userDetails.getUsername())
+        .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+
             long id_long;
             try {
                     id_long = Long.parseLong(id);
@@ -76,7 +81,12 @@ public class DeveloperController {
             }
             PhaseAssignment phaseAssignment = phaseAssignmentRepository.findById(id_long)
                             .orElseThrow(() -> new RuntimeException("Error: Phase not found"));
-        
+                if (!phaseAssignment.getDev().getId().equals(em.getId())) {
+                                return ResponseEntity
+                                                .badRequest()
+                                                .body(new MessageResponse(
+                                                                "Error: You are not the developer of this phase"));
+                        }
             
             return ResponseEntity.ok(new PhaseResponse(phaseAssignment.getPhase().getName(),
                                                         phaseAssignment.getDev().getName()+" "+phaseAssignment.getDev().getLastName(),
