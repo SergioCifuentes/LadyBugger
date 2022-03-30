@@ -1,5 +1,6 @@
 package ladybugger.repos;
 
+import ladybugger.exceptions.ResourceNotFoundException;
 import ladybugger.model.*;
 import ladybugger.payload.response.ProjectCases;
 import ladybugger.payload.response.SimpleCase;
@@ -106,6 +107,17 @@ public class AdminRepoTest {
                     .findLastManager(project.getId());
             Assertions.assertThat(pma).isNotNull();
         }
+    }
+
+    @Test
+    public void testDeleteEmployee() {
+        Employee em = userRepository.findByEmail("email")
+                .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+        Assertions.assertThat(em.getId()).isEqualTo((long) 1);
+        Employee employee = userRepository.findById((long) 1)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + em.getId()));
+        employee.setStatus(2);
+        Assertions.assertThat(userRepository.save(employee).getStatus()).isEqualTo(2);
     }
 
     @Test
