@@ -11,5 +11,4 @@ public class LadyBuggerApplication {
 		SpringApplication.run(LadyBuggerApplication.class, args);
 	}
 
-	
 }
