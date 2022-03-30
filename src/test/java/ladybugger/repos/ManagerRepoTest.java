@@ -51,7 +51,6 @@ public class ManagerRepoTest {
                 new Date(System.currentTimeMillis()+25),
                 1);
         caseRepository.save(newCase);
-        caseRepository.flush();
         Assertions.assertThat(newCase.getId()).isInstanceOf(Long.class);
     }
 
