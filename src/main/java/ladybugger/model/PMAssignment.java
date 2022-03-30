@@ -26,6 +26,9 @@ public class PMAssignment {
 
     
 
+    public PMAssignment() {
+    }
+
     public PMAssignment(Employee employee, Project project, Timestamp date) {
         this.employee = employee;
         this.project = project;

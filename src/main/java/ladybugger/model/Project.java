@@ -1,20 +1,10 @@
 package ladybugger.model;
 
-
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import javax.persistence.*;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -47,15 +37,14 @@ public class Project {
     @ManyToOne
     @JoinColumn(name="admin", nullable=false)
     private Employee admin;
+
+    @OneToMany(mappedBy = "project")
+	Set<Case> cases;
 	
 
 
     @OneToMany(mappedBy = "project")
     Set<PMAssignment> pms;
-
-
-
-	
 
 
 
@@ -69,6 +58,20 @@ public class Project {
         this.startDate = startDate;
         this.dueDate = dueDate;
         this.admin = admin;
+    }
+
+
+    public Project() {
+    }
+    
+
+    public Set<Case> getCases() {
+        return cases;
+    }
+
+
+    public void setCases(Set<Case> cases) {
+        this.cases = cases;
     }
 
 

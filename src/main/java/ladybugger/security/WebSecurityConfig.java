@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import ladybugger.security.services.UserDetailsServiceImpl;
 
-import ladybugger.security.jwt.AuthEntryPointJwt;
 import ladybugger.security.jwt.AuthTokenFilter;
 @Configuration
 @EnableWebSecurity
@@ -28,7 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
 	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
@@ -51,6 +49,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable().authorizeRequests()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers("/api/test/**").permitAll()
+			.antMatchers("/admin/**").permitAll()
+			.antMatchers("/manager/**").permitAll()
+			.antMatchers("/developer/**").permitAll()
+			.antMatchers("/ladybugger/**").permitAll()
             .anyRequest().authenticated()
             .and()
             // this disables session creation on Spring Security

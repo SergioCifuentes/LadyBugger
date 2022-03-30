@@ -1,14 +1,10 @@
 package ladybugger.payload.request;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 import javax.validation.constraints.*;
 public class ProjectCreationRequest {
     
-
-
-
 
   @NotBlank
   @Size(max = 40)

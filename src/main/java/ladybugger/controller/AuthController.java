@@ -1,5 +1,6 @@
 package ladybugger.controller;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +79,8 @@ public class AuthController {
 							 encoder.encode(signUpRequest.getPassword()),
 							 signUpRequest.getName(),
 							 signUpRequest.getMiddleName(),
-							 signUpRequest.getLastName());
+							 signUpRequest.getLastName(),							
+							 java.sql.Date.valueOf(LocalDate.now()),1);
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
 		if (strRoles == null) {
