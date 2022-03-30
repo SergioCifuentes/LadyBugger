@@ -90,7 +90,7 @@ public class ManagerController {
                                 1,
                                 pr,
                                 caseRequest.getStartDate(),
-                                caseRequest.getDueDate(),1);
+                                caseRequest.getDueDate(), 1);
 
                 caseRepository.save(newCase);
                 return new ResponseEntity<String>("{\"id\": \"" + newCase.getId() + "\"}", HttpStatus.OK);
@@ -165,24 +165,21 @@ public class ManagerController {
                 Employee em = userRepository.findByEmail(userDetails.getUsername())
                                 .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
 
-                
                 List<Long> projectIds = pmaRepository.findProjects(em.getId());
-                List<SimpleProject> projects=new ArrayList<SimpleProject>();
+                List<SimpleProject> projects = new ArrayList<SimpleProject>();
                 for (Long id : projectIds) {
                         Project pr = projectRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Error: Project not found"));
-        
-                        projects.add(new SimpleProject((long)id,
-                                                        em.getName()+" "+em.getLastName(),
-                                                        pr.getName(),
-                                                        pr.getDueDate().toString(),
-                                                        pr.getStatus()));
+                                        .orElseThrow(() -> new RuntimeException("Error: Project not found"));
+
+                        projects.add(new SimpleProject((long) id,
+                                        em.getName() + " " + em.getLastName(),
+                                        pr.getName(),
+                                        pr.getDueDate().toString(),
+                                        pr.getStatus()));
                 }
-                
+
                 return ResponseEntity.ok(projects);
         }
-
-
 
         @GetMapping("/get-project/{id}")
         public ResponseEntity<?> getProject(@PathVariable String id) {
@@ -199,49 +196,52 @@ public class ManagerController {
                 PMAssignment pma = pmaRepository
                                 .findLastManager(pr.getId());
 
-                List<CaseView> cases=new ArrayList<CaseView>();
-                Set<Case> pr_cases=pr.getCases();
+                List<CaseView> cases = new ArrayList<CaseView>();
+                Set<Case> pr_cases = pr.getCases();
                 List<Case> caseList = new ArrayList<>(pr_cases);
                 for (int i = 0; i < caseList.size(); i++) {
-                        Case ca =caseList.get(i);
-                        List<PhaseView> phases=new ArrayList<PhaseView>();
-                        Set<Phase> pr_phase=ca.getCasetype().getPhases();
-                        List<Phase> phaseList = new ArrayList<>(pr_phase);
-                        for (int j = 0; j < phaseList.size(); j++) {
-                                Phase ph =phaseList.get(i);
-                                
-                                PhaseAssignment pa = phaseAssignmentRepository.findDev(ca.getId(), ph.getId());
-                                if (pa!=null){
-                                        phases.add(new PhaseView(ph.getId(), 
-                                                pa.getDev().getName()+" "+pa.getDev().getLastName(), 
-                                                pa.getDev().getId(), 
-                                                ph.getNumber(), 
-                                                pa.getStatus(), 
-                                                pa.getStartDate().toString(), 
-                                                pa.getDueDate().toString()));
-                        
-                                }else{
-                                        phases.add(new PhaseView(ph.getId(), 
-                                                "", 
-                                                (long)-1, 
-                                                ph.getNumber(), 
-                                                0, 
-                                                "", 
-                                                ""));
+                        Case ca = caseList.get(i);
+                        List<PhaseView> phases = new ArrayList<PhaseView>();
+                        Set<Phase> pr_phase = ca.getCasetype().getPhases();
+                        if (!ca.getCasetype().getPhases().isEmpty()) {
+                                List<Phase> phaseList = new ArrayList<>(pr_phase);
+                                for (int j = 0; j < phaseList.size(); j++) {
+                                        Phase ph = phaseList.get(i);
+
+                                        PhaseAssignment pa = phaseAssignmentRepository.findDev(ca.getId(), ph.getId());
+                                        if (pa != null) {
+                                                phases.add(new PhaseView(ph.getId(),
+                                                                pa.getDev().getName() + " " + pa.getDev().getLastName(),
+                                                                pa.getDev().getId(),
+                                                                ph.getNumber(),
+                                                                pa.getStatus(),
+                                                                pa.getStartDate().toString(),
+                                                                pa.getDueDate().toString()));
+
+                                        } else {
+                                                phases.add(new PhaseView(ph.getId(),
+                                                                "",
+                                                                (long) -1,
+                                                                ph.getNumber(),
+                                                                0,
+                                                                "",
+                                                                ""));
+                                        }
                                 }
                         }
-                        cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(), 
-                        ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(),phases,ca.getCurrent()));
+                        cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(),
+                                        ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(), phases,
+                                        ca.getCurrent()));
                 }
-                return ResponseEntity.ok(new ProjectView(pr.getId(), 
-                                                pr.getName(), 
-                                                pr.getDescription(), 
-                                                pma.getEmployee().getName()+" "+pma.getEmployee().getLastName(), 
-                                                pma.getEmployee().getId(), 
-                                                pr.getStartDate().toString(), 
-                                                pr.getDueDate().toString(), 
-                                                pr.getStatus(), 
-                                                cases));
+                return ResponseEntity.ok(new ProjectView(pr.getId(),
+                                pr.getName(),
+                                pr.getDescription(),
+                                pma.getEmployee().getName() + " " + pma.getEmployee().getLastName(),
+                                pma.getEmployee().getId(),
+                                pr.getStartDate().toString(),
+                                pr.getDueDate().toString(),
+                                pr.getStatus(),
+                                cases));
         }
 
 }
