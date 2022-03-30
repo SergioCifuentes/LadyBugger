@@ -210,7 +210,7 @@ public class ManagerController {
                                         PhaseAssignment pa = phaseAssignmentRepository.findDev(ca.getId(), ph.getId());
                                         if (pa != null) {
                                                 phases.add(new PhaseView(ph.getId(),
-                                                                pa.getDev().getName() + " " + pa.getDev().getLastName(),
+                                                                pa.getDev().getName(),
                                                                 pa.getDev().getId(),
                                                                 ph.getNumber(),
                                                                 pa.getStatus(),
@@ -235,7 +235,7 @@ public class ManagerController {
                 return ResponseEntity.ok(new ProjectView(pr.getId(),
                                 pr.getName(),
                                 pr.getDescription(),
-                                pma.getEmployee().getName() + " " + pma.getEmployee().getLastName(),
+                                pma.getEmployee().getName(),
                                 pma.getEmployee().getId(),
                                 pr.getStartDate().toString(),
                                 pr.getDueDate().toString(),
