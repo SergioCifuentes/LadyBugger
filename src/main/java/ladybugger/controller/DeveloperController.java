@@ -1,5 +1,8 @@
 package ladybugger.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import ladybugger.model.PhaseAssignment;
 import ladybugger.model.Submission;
 import ladybugger.payload.request.SubmissionRequest;
 import ladybugger.payload.response.MessageResponse;
+import ladybugger.payload.response.PhaseDevResponse;
+import ladybugger.payload.response.PhaseDevResponse;
 import ladybugger.payload.response.PhaseResponse;
 import ladybugger.repository.EmployeeRepository;
 import ladybugger.repository.PhaseAssignmentRepository;
@@ -98,6 +103,28 @@ public class DeveloperController {
                                                         phaseAssignment.getCaseM().getTitle(),
                                                         phaseAssignment.getCaseM().getDescription()
                                                         ));
+    }
+
+    @GetMapping("/get-phases")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getPhases() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+        Employee em = userRepository.findByEmail(userDetails.getUsername())
+        .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+        List<PhaseDevResponse> phasesResponse=new ArrayList<PhaseDevResponse>();
+            List<PhaseAssignment> phaseAssignments = phaseAssignmentRepository.findPhasesByDev(em.getId());
+            for (PhaseAssignment phaseAs : phaseAssignments) {
+                    phasesResponse.add(new PhaseDevResponse(phaseAs.getPhase().getId(),
+                                                        phaseAs.getPhase().getName(),
+                                                        phaseAs.getCaseM().getProject().getName(),
+                                                        phaseAs.getCaseM().getTitle(),
+                                                        em.getName()+" "+em.getLastName(),
+                                                        phaseAs.getStartDate().toString(),
+                                                        phaseAs.getDueDate().toString(),
+                                                        phaseAs.getStatus()));
+            }       
+            return ResponseEntity.ok(phasesResponse);
     }
 
 }
