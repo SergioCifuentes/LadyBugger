@@ -18,11 +18,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ladybugger.exceptions.*;
 import ladybugger.model.Case;
 import ladybugger.model.CaseType;
 import ladybugger.model.Employee;
@@ -33,6 +36,7 @@ import ladybugger.payload.request.CaseTypeCreationRequest;
 import ladybugger.payload.request.PMAssignmentRequest;
 import ladybugger.payload.request.ProjectCreationRequest;
 import ladybugger.payload.response.CaseResponse;
+import ladybugger.payload.response.MessageResponse;
 import ladybugger.payload.response.ProjectCases;
 import ladybugger.payload.response.SimpleCase;
 import ladybugger.repository.CaseRepository;
@@ -112,82 +116,97 @@ public class AdminController {
         System.out.println(strphases);
         String[] arrphases = strphases.toArray(new String[strphases.size()]);
 
-        for(int i=0;i<arrphases.length;i++){
-            Phase phase = new Phase(arrphases[i], i+1, caseType);
+        for (int i = 0; i < arrphases.length; i++) {
+            Phase phase = new Phase(arrphases[i], i + 1, caseType);
             phases.add(phase);
         }
-        
-
-        
 
         caseTypeRepository.save(caseType);
         phaseRepository.saveAll(phases);
-		return new ResponseEntity<String>("{\"id\": \""+caseType.getId()+"\"}", HttpStatus.OK);
+        return new ResponseEntity<String>("{\"id\": \"" + caseType.getId() + "\"}", HttpStatus.OK);
     }
-
 
     @PostMapping("/assign-project")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> assignProject(@Valid @RequestBody PMAssignmentRequest pmAssignmentRequest) {
-        Project pr = projectRepository.findById((long)pmAssignmentRequest.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Error: Project not found")); 
+        Project pr = projectRepository.findById((long) pmAssignmentRequest.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Error: Project not found"));
 
-        Employee dev = userRepository.findById((long)pmAssignmentRequest.getEmployeeId())
-        .orElseThrow(() -> new RuntimeException("Error: Dev not found"));  
-        java.sql.Timestamp timestamp1 = new java.sql.Timestamp(System.currentTimeMillis());      
+        Employee dev = userRepository.findById((long) pmAssignmentRequest.getEmployeeId())
+                .orElseThrow(() -> new RuntimeException("Error: Dev not found"));
+        java.sql.Timestamp timestamp1 = new java.sql.Timestamp(System.currentTimeMillis());
         PMAssignment pma = new PMAssignment(dev,
-                                            pr,
-                                            timestamp1);
+                pr,
+                timestamp1);
         pmAssignmentRepository.save(pma);
-		return new ResponseEntity<String>("Project Manager Asignado", HttpStatus.OK);
-    }  
-    @GetMapping(value ="/get-projects")
+        return new ResponseEntity<String>("Project Manager Asignado", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-projects")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getProjects(Pageable pageable) {
-            
-            Page<Project> pr = projectRepository.findAll(pageable);
-                            
-            List<ProjectCases> projectsResponse=new ArrayList<ProjectCases>();
-            for (Project project : pr) {
-                List<SimpleCase> casesResponse=new ArrayList<SimpleCase>();
-                for (Case cases : project.getCases()) {
-                    casesResponse.add(new SimpleCase(cases.getId(), 
-                                                    cases.getTitle(), 
-                                                    cases.getDescription()));
-                }
-                PMAssignment pma = pmaRepository
-                                .findLastManager(project.getId());
-                projectsResponse.add(new ProjectCases(project.getId(), 
-                                            project.getName(),
-                                            pma.getEmployee().getName()+" "+pma.getEmployee().getLastName(),
-                                            project.getStatus(), 
-                                            project.getStartDate().toString(), 
-                                            project.getDueDate().toString(), 
-                                            casesResponse));
-            }
-           
-            return ResponseEntity.ok(projectsResponse);
-    }  
 
-    
-    @GetMapping(value ="/get-cases")
+        Page<Project> pr = projectRepository.findAll(pageable);
+
+        List<ProjectCases> projectsResponse = new ArrayList<ProjectCases>();
+        for (Project project : pr) {
+            List<SimpleCase> casesResponse = new ArrayList<SimpleCase>();
+            for (Case cases : project.getCases()) {
+                casesResponse.add(new SimpleCase(cases.getId(),
+                        cases.getTitle(),
+                        cases.getDescription()));
+            }
+            PMAssignment pma = pmaRepository
+                    .findLastManager(project.getId());
+            projectsResponse.add(new ProjectCases(project.getId(),
+                    project.getName(),
+                    pma.getEmployee().getName() + " " + pma.getEmployee().getLastName(),
+                    project.getStatus(),
+                    project.getStartDate().toString(),
+                    project.getDueDate().toString(),
+                    casesResponse));
+        }
+
+        return ResponseEntity.ok(projectsResponse);
+    }
+
+    @PutMapping("/delete-employee/{id}")
+    public ResponseEntity<?> softDeleteEmployee(@PathVariable(value = "id") Long employeeId)
+            throws ResourceNotFoundException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Employee em = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+        if(em.getId().equals(employeeId)){
+            return ResponseEntity
+                                    .badRequest()
+                                    .body(new MessageResponse("You can't delete yourself"));
+        }
+        Employee employee = userRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+        employee.setStatus(2);
+        final Employee updatedEmployee = userRepository.save(employee);
+        return ResponseEntity.ok(updatedEmployee);
+    }
+
+    @GetMapping(value = "/get-cases")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getCases(Pageable pageable) {
-            
-            Page<Case> pr = caseRepository.findAll(pageable);
-                            
-            List<CaseResponse> casesResponse=new ArrayList<CaseResponse>();
-            for (Case caseM : pr) {
-                casesResponse.add(new CaseResponse(caseM.getId(), 
-                                                caseM.getDescription(), 
-                                                caseM.getCasetype().getName(), 
-                                                caseM.getStatus(), 
-                                                caseM.getProject().getName(), 
-                                                caseM.getProject().getId(), 
-                                                caseM.getStartDate().toString(), 
-                                                caseM.getDueDate().toString()));           
-            }
-           
-            return ResponseEntity.ok(casesResponse);
-    }      
+
+        Page<Case> pr = caseRepository.findAll(pageable);
+
+        List<CaseResponse> casesResponse = new ArrayList<CaseResponse>();
+        for (Case caseM : pr) {
+            casesResponse.add(new CaseResponse(caseM.getId(),
+                    caseM.getDescription(),
+                    caseM.getCasetype().getName(),
+                    caseM.getStatus(),
+                    caseM.getProject().getName(),
+                    caseM.getProject().getId(),
+                    caseM.getStartDate().toString(),
+                    caseM.getDueDate().toString()));
+        }
+
+        return ResponseEntity.ok(casesResponse);
+    }
 }
