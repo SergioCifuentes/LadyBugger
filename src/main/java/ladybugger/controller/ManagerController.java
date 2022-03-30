@@ -201,17 +201,19 @@ public class ManagerController {
 
                 List<CaseView> cases=new ArrayList<CaseView>();
                 Set<Case> pr_cases=pr.getCases();
-                for (int i = 0; i < pr_cases.size(); i++) {
-                        Case ca =pr_cases.iterator().next();
+                List<Case> caseList = new ArrayList<>(pr_cases);
+                for (int i = 0; i < caseList.size(); i++) {
+                        Case ca =caseList.get(i);
                         List<PhaseView> phases=new ArrayList<PhaseView>();
                         Set<Phase> pr_phase=ca.getCasetype().getPhases();
-                        for (int j = 0; j < pr_phase.size(); j++) {
-                                Phase ph =pr_phase.iterator().next();
+                        List<Phase> phaseList = new ArrayList<>(pr_phase);
+                        for (int j = 0; j < phaseList.size(); j++) {
+                                Phase ph =phaseList.get(j);
                                 
                                 PhaseAssignment pa = phaseAssignmentRepository.findDev(ca.getId(), ph.getId());
                                 if (pa!=null){
                                         phases.add(new PhaseView(ph.getId(), 
-                                                pa.getDev().getName(), 
+                                                pa.getDev().getName()+" "+pa.getDev().getLastName(), 
                                                 pa.getDev().getId(), 
                                                 ph.getNumber(), 
                                                 pa.getStatus(), 
@@ -227,7 +229,6 @@ public class ManagerController {
                                                 "", 
                                                 ""));
                                 }
-                                System.out.println(pa);
                         }
                         cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(), 
                         ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(),phases,ca.getCurrent()));
@@ -235,7 +236,7 @@ public class ManagerController {
                 return ResponseEntity.ok(new ProjectView(pr.getId(), 
                                                 pr.getName(), 
                                                 pr.getDescription(), 
-                                                pma.getEmployee().getName(), 
+                                                pma.getEmployee().getName()+" "+pma.getEmployee().getLastName(), 
                                                 pma.getEmployee().getId(), 
                                                 pr.getStartDate().toString(), 
                                                 pr.getDueDate().toString(), 

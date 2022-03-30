@@ -14,6 +14,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	Optional<Employee> findByEmail(String email);
 	Boolean existsByEmail(String email);
 
-	@Query(value ="SELECT e.id,e.name,e.last_name FROM employee AS e INNER JOIN user_roles AS r ON e.id=r.user_id WHERE r.role_id = 1" , nativeQuery = true)
+	@Query(value ="SELECT e.id,e.name,e.last_name FROM employee AS e INNER JOIN user_roles AS r ON e.id=r.user_id WHERE r.role_id = 1 AND e.status=1" , nativeQuery = true)
 	List<Object[]> findByDevRole();
 }
