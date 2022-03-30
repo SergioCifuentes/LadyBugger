@@ -1,13 +1,7 @@
 package ladybugger.repos;
 
-import ladybugger.model.Case;
-import ladybugger.model.CaseType;
-import ladybugger.model.Employee;
-import ladybugger.model.Project;
-import ladybugger.repository.CaseRepository;
-import ladybugger.repository.CaseTypeRepository;
-import ladybugger.repository.EmployeeRepository;
-import ladybugger.repository.ProjectRepository;
+import ladybugger.model.*;
+import ladybugger.repository.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -34,11 +28,16 @@ public class ManagerRepoTest {
     ProjectRepository projectRepository;
     @Autowired
     CaseTypeRepository caseTypeRepository;
+    @Autowired
+    PhaseRepository phaseRepository;
+    @Autowired
+    EmployeeRepository userRepository;
+    @Autowired
+    PhaseAssignmentRepository phaseAssignmentRepository;
 
     @Test
     public void createCaseType() {
-        int i = 4;
-        Project pr = projectRepository.findById((long) i)
+        Project pr = projectRepository.findById((long) 4)
                 .orElseThrow(() -> new RuntimeException("Error: Project not found"));
         CaseType ct = caseTypeRepository.findById((long) 1)
                 .orElseThrow(() -> new RuntimeException("Error: CaseType not found"));
@@ -53,6 +52,30 @@ public class ManagerRepoTest {
         caseRepository.save(newCase);
         caseRepository.flush();
         Assertions.assertThat(newCase.getId()).isInstanceOf(Long.class);
+    }
+
+    @Test
+    public void assignPhase() {
+        Employee em = userRepository.findByEmail("email")
+                .orElseThrow(() -> new RuntimeException("Error: Employee not found"));
+
+        Phase phase = phaseRepository.findById((long) 1)
+                .orElseThrow(() -> new RuntimeException("Error: Phase not found"));
+
+        Case caseM = caseRepository.findById((long) 1)
+                .orElseThrow(() -> new RuntimeException("Error: Case not found"));
+        PhaseAssignment phaseAssignment = new PhaseAssignment(
+                em,
+                phase,
+                caseM,
+                "description",
+                1,
+                new Date(System.currentTimeMillis()),
+                new Date(System.currentTimeMillis()+25));
+        phaseAssignmentRepository.save(phaseAssignment);
+        phaseAssignmentRepository.flush();
+        System.out.println(phaseAssignment.getId());
+        Assertions.assertThat(phaseAssignment.getId()).isInstanceOf(Long.class);
     }
 
 }
