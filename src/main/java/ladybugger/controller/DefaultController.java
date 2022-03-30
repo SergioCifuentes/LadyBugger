@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ladybugger.model.Employee;
 import ladybugger.model.PMAssignment;
 import ladybugger.model.PhaseAssignment;
-import ladybugger.model.Project;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.payload.response.ProfileResponse;
 import ladybugger.repository.EmployeeRepository;
