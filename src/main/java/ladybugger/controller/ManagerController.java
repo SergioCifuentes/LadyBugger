@@ -203,10 +203,9 @@ public class ManagerController {
                         Case ca = caseList.get(i);
                         List<PhaseView> phases = new ArrayList<PhaseView>();
                         Set<Phase> pr_phase = ca.getCasetype().getPhases();
-                        if (!ca.getCasetype().getPhases().isEmpty()) {
-                                List<Phase> phaseList = new ArrayList<>(pr_phase);
-                                for (int j = 0; j < phaseList.size(); j++) {
-                                        Phase ph = phaseList.get(i);
+                        
+                                for (int j = 0; j < pr_phase.size(); j++) {
+                                        Phase ph = pr_phase.iterator().next();
 
                                         PhaseAssignment pa = phaseAssignmentRepository.findDev(ca.getId(), ph.getId());
                                         if (pa != null) {
@@ -228,7 +227,7 @@ public class ManagerController {
                                                                 ""));
                                         }
                                 }
-                        }
+                        
                         cases.add(new CaseView(ca.getId(), ca.getTitle(), ca.getStartDate().toString(),
                                         ca.getDueDate().toString(), ca.getDescription(), ca.getStatus(), phases,
                                         ca.getCurrent()));
