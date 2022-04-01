@@ -1,7 +1,6 @@
 package ladybugger.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -241,10 +240,4 @@ public class AdminController {
         return ResponseEntity.ok(employeeResponse);
     }
 
-    @GetMapping(value = "/projects-count")
-    @PreAuthorize("hasRole('ADMIN')")
-    public Integer getProjectCount(Pageable pageable) {
-
-        return userRepository.findAll().size();
-    }
 }

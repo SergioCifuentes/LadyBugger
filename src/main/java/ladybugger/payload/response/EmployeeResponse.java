@@ -1,5 +1,4 @@
 package ladybugger.payload.response;
-import java.util.List;
 public class EmployeeResponse {
     private Long id;
     private String full_name;
