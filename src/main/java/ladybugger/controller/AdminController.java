@@ -240,4 +240,11 @@ public class AdminController {
 
         return ResponseEntity.ok(employeeResponse);
     }
+
+    @GetMapping(value = "/projects-count")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Integer getProjectCount(Pageable pageable) {
+
+        return userRepository.findAll().size();
+    }
 }
