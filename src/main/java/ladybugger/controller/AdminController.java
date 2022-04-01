@@ -1,6 +1,7 @@
 package ladybugger.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,10 +33,12 @@ import ladybugger.model.Employee;
 import ladybugger.model.PMAssignment;
 import ladybugger.model.Phase;
 import ladybugger.model.Project;
+import ladybugger.model.Role;
 import ladybugger.payload.request.CaseTypeCreationRequest;
 import ladybugger.payload.request.PMAssignmentRequest;
 import ladybugger.payload.request.ProjectCreationRequest;
 import ladybugger.payload.response.CaseResponse;
+import ladybugger.payload.response.EmployeeResponse;
 import ladybugger.payload.response.MessageResponse;
 import ladybugger.payload.response.ProjectCases;
 import ladybugger.payload.response.SimpleCase;
@@ -208,5 +211,33 @@ public class AdminController {
         }
 
         return ResponseEntity.ok(casesResponse);
+    }
+    @GetMapping(value = "/get-users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getUsers(Pageable pageable) {
+
+        Page<Employee> employees = userRepository.findAll(pageable);
+
+        List<EmployeeResponse> employeeResponse = new ArrayList<EmployeeResponse>();
+        
+        for (Employee employee : employees) {
+        
+                List<Role> roles = new ArrayList<>(employee.getRoles());
+                String role;
+                if (roles.size()==2){
+                        role="ROLE_ADMIN";
+                }else{
+                        role="ROLE_USER";
+                }
+                employeeResponse.add(new EmployeeResponse(employee.getId(),
+                                                employee.getName()+" "+employee.getLastName(),
+                                                employee.getEmail(),
+                                                role,
+                                                employee.getStatus(),
+                                                employee.getStartDate().toString()));
+                
+        }
+
+        return ResponseEntity.ok(employeeResponse);
     }
 }
